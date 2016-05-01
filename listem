@@ -1,5 +1,8 @@
 #!/bin/bash
 #
+#
+###### listem #########
+#
 ### List through tunables and logs ###
 ### Or even ##################
 ### Change value ###############
@@ -564,9 +567,20 @@ change_decide
 
 change_decide() {
 ###### Insert name to change #######
-read -p "$(tput setaf 1)$(tput bold) INSERT PRECISE NAME OF TUNABLE TO CHANGE: $(tput sgr0)" change_this
+read -p "$(tput setaf 1)$(tput bold) INSERT PRECISE NAME OF TUNABLE TO CHANGE (or cancel with c or n): $(tput sgr0)" change_this
 precise_change=""$location""""$change_this""
-final_decision
+if [ "$change_this" == "n" ] || [ "$change_this" == "N" ] || [ "$change_this" == "c" ] || [ "$change_this" == "C" ]; then
+	echo " You choose not to proceed... OK"
+	more
+elif  [ -e "$precise_change" ]; then
+	read -p "$(tput setaf 1)$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
+	final_decision
+else
+	echo "$(tput setaf 4)This file is not existing. Try again. $(tput sgr0)"
+	unset change_this
+	unset precise_change
+	change_decide
+fi
 }
 
 
@@ -598,7 +612,6 @@ fi
 
 
 change_engage() {
-read -p "$(tput setaf 1)$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
 echo "$new_value" | sudo tee $precise_change
 echo "Value of " $precise_change " is now : " $new_value
 echo " "
@@ -623,6 +636,7 @@ get_out() {
 echo " "
 echo "$(tput setaf 4)$(tput bold) That's all folks! $(tput sgr0)"
 
+unset change_value
 unset location
 unset tunelist
 unset echo_tune_result
