@@ -1,0 +1,663 @@
+#!/bin/bash
+#
+#
+###### listem #########
+#
+######UnColored Edition ########
+#
+#
+### List through tunables and logs ###
+### Or even ##################
+### Change value ###############
+#
+# Author: Davor Buday
+# Email: davor.buday@gmail.com
+#
+#############################
+
+
+#### FUNCTIONS ####
+
+print_choices() {
+### Print choices ###
+echo "$(tput bold) Choose desired location to list values (from /proc/sys) : $(tput sgr0)"
+echo "$(tput bold)1$(tput sgr0).................debug"
+echo "$(tput bold)2$(tput sgr0).................fs"
+echo "$(tput bold)3$(tput sgr0).................kernel"
+echo "$(tput bold)4$(tput sgr0).................net         $(tput bold)44$(tput sgr0)......more of $(tput bold)net $(tput sgr0)"
+echo "$(tput bold)5$(tput sgr0).................vm"
+echo "$(tput bold)55$(tput sgr0).......................  informations from$(tput sgr0) $(tput bold)/proc$(tput sgr0)"
+echo "$(tput bold) Or choose desired log file to tail (from /var/log) : $(tput sgr0)"
+echo "$(tput bold)6$(tput sgr0).................lastlog"
+echo "$(tput bold)7$(tput sgr0).................dmesg"
+echo "$(tput bold)8$(tput sgr0).................syslog"
+echo "$(tput bold)9$(tput sgr0).................udev"
+echo "$(tput bold)10$(tput sgr0)................kern.log"
+echo "  To save all listed tunables as text file, choose $(tput bold)112 $(tput sgr0)"
+echo "  To change tunable value, choose $(tput bold)911 $(tput sgr0) (be careful) $(tput sgr0)"
+make_choice
+}
+
+
+print_net_choices() {
+echo "$(tput bold) Choose desired location to list values (from /proc/sys/net) : $(tput sgr0)"
+echo "$(tput bold)1$(tput sgr0)................................bridge"
+echo "$(tput bold)2$(tput sgr0)................................core"
+echo "$(tput bold)3$(tput sgr0)................................ipv4"
+echo "$(tput bold)4$(tput sgr0)................................ipv6"
+echo "$(tput bold)5$(tput sgr0)................................netfilter"
+make_net_choice
+}
+
+
+print_proc_info() {
+echo "$(tput bold) Choose information file to read (from /proc) : $(tput sgr0)"
+echo "$(tput bold)1$(tput sgr0)................................cpuinfo"
+echo "$(tput bold)2$(tput sgr0)................................meminfo"
+echo "$(tput bold)3$(tput sgr0)................................mounts"
+echo "$(tput bold)4$(tput sgr0)................................partitions"
+echo "$(tput bold)5$(tput sgr0)................................swaps"
+echo "$(tput bold)6$(tput sgr0)................................interrupts"
+echo "$(tput bold)7$(tput sgr0)................................vmstat"
+echo "$(tput bold)8$(tput sgr0)................................cmdline"
+echo "$(tput bold)9$(tput sgr0)................................version"
+
+make_proc_choice
+}
+
+
+make_proc_choice() {
+while true; do
+		read -p "$(tput bold) Your selection ( 1 - 9 ) ? $(tput sgr0)" choice
+		case $choice in
+			1) 	location="/proc/cpuinfo"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			2) 	location="/proc/meminfo"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			3)	 location="/proc/mounts"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			4)	 location="/proc/partitions"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			5)	 location="/proc/swaps"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			6)	 location="/proc/interrupts"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			7)	 location="/proc/vmstat"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			8)	 location="/proc/cmdline"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+			9)	 location="/proc/version"
+					unset choice
+					echo " Showing contents of $(tput bold)" $location " :$(tput sgr0)"
+					cat $location
+					unset location
+					more
+					break
+					;;
+				* ) echo -e "I need correct answer - 1, 2, 3, 4, 5, 6, 7, 8 or 9 ! "
+		esac
+	done
+}
+
+
+make_net_choice() {
+while true; do
+		read -p "$(tput bold) Your selection ( 1 - 5 ) ? $(tput sgr0)" choice
+		case $choice in
+			1) 	location="/proc/sys/net/bridge/"
+					unset choice
+					correct_location
+					break
+					;;
+			2) 	location="/proc/sys/net/core/"
+					unset choice
+					correct_location
+					break
+					;;
+			3)	 location="/proc/sys/net/ipv4/"
+					unset choice
+					correct_location
+					break
+					;;
+			4)	 location="/proc/sys/net/ipv6/"
+					unset choice
+					correct_location
+					break
+					;;
+			5)	 location="/proc/sys/net/netfilter/"
+					unset choice
+					correct_location
+					break
+					;;
+				* ) echo -e "I need correct answer - 1, 2, 3, 4 or 5 ! "
+		esac
+	done
+}
+
+
+make_choice() {
+### Make your choice ###
+while true; do
+		read -p "$(tput bold) Your selection ( corresponding number ) ? $(tput sgr0)" choice
+		case $choice in
+			1) 	location="/proc/sys/debug/"
+					unset choice
+					correct_location
+					break
+					;;
+			2) 	location="/proc/sys/fs/"
+					unset choice
+					correct_location
+					break
+					;;
+			3)	 location="/proc/sys/kernel/"
+					unset choice
+					correct_location
+					break
+					;;
+			4)	 location="/proc/sys/net/"
+					unset choice
+					correct_location
+					break
+					;;
+			44)		unset choice
+					print_net_choices
+					break
+					;;
+			5)	 location="/proc/sys/vm/"
+					unset choice
+					correct_location
+					break
+					;;
+			55)	 	unset choice
+					print_proc_info
+					break
+					;;
+			6)	 location="/var/log/lastlog"
+					unset choice
+					cat $location
+					more_logs
+					break
+					;;
+			7)	 location="/var/log/dmesg"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			8)	 location="/var/log/syslog"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+
+			9)	 location="/var/log/udev"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			10)	 location="/var/log/kern.log"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			112)	unset choice
+					backup_call
+					break
+					;;
+			911)	unset choice
+					change_value=1
+					echo "$(tput bold)This is potentially dangerous move.$(tput sgr0)"
+					save_before_change
+					break
+					;;
+				* ) echo -e "I need correct answer - 1, 2, 3, 4, 44, 5, 55, 6, 7, 8, 9 or 10 ! "
+		esac
+	done
+}
+
+
+correct_location() {
+### Correct location ###
+tunelist=""$location""*""""
+tunables
+}
+
+
+tunables() {
+###Title###
+clear
+echo " $(tput bold)      Showing tunable values of " $location ": $(tput sgr0)"
+echo " "
+loop_tunables
+}
+
+
+loop_tunables() {
+################################
+### Loop  tunables ###
+loop=0
+for tune in $tunelist; do
+if [ -f "$tune" ]; then
+	echo_tune_result=$(cat $tune)
+	echo_tune_name=${tune#$location}
+######  Show us tunables #######
+	echo $echo_tune_name  ": " $echo_tune_result
+
+### Stop scrolling after 20 rows - wait for keypress ###
+	(( loop++))
+		if [[ loop -eq 20 ]]; then
+			echo " Just waiting for keypress to continue... $(tput sgr0)"
+			read -n 1 -s
+			loop=0
+		fi
+fi
+done
+#################################
+more
+}
+
+
+more() {
+while true; do
+		read -p "$(tput bold) Anything else? $(tput sgr0)" choice
+		case $choice in
+			[yYdD]*) unset choice
+					print_choices
+					break
+					;;
+			[nN]*) 	unset choice
+					get_out
+					break
+					;;
+				* ) echo -e "I need an answer - y (yes) or n (no) ! "
+		esac
+	done
+}
+
+
+more_logs() {
+echo
+while true; do
+		read -p  "More log files to tail ? $(tput bold) Choose 6, 7, 8, 9, 10 or n(no)  : $(tput sgr0)" choice
+		case $choice in
+			6)	 location="/var/log/lastlog"
+					unset choice
+					cat $location
+					more_logs
+					break
+					;;
+			7)	 location="/var/log/dmesg"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			8)	 location="/var/log/syslog"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			9)	 location="/var/log/udev"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			10)	 location="/var/log/kern.log"
+					unset choice
+					echo " Tailing $(tput bold)" $location " :$(tput sgr0)"
+					tail $location
+					more_logs
+					break
+					;;
+			[nN]*)	unset choice
+					more
+					break
+					;;
+				* ) echo -e " I need correct answer - 6, 7, 8, 9, 10 or n(no) ! "
+		esac
+	done
+}
+
+
+backup_call() {
+location_list="/proc/sys/debug/ /proc/sys/fs/ /proc/sys/kernel/ /proc/sys/net/ /proc/sys/net/bridge/ /proc/sys/net/core/ /proc/sys/net/ipv4/ /proc/sys/net/ipv6/ /proc/sys/net/netfilter/ /proc/sys/vm/"
+
+if [ -e "tunables_backup_by_listem.txt" ]; then
+		echo " " >> tunables_backup_by_listem.txt
+		echo " " >> tunables_backup_by_listem.txt
+		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txt
+		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txt
+		echo " " >> tunables_backup_by_listem.txt
+		date >> tunables_backup_by_listem.txt
+		echo " " >> tunables_backup_by_listem.txt
+		tunables_backup
+	else
+		echo " " > tunables_backup_by_listem.txt
+		echo "This file is created by listem script (bash script showing tunables)." >> tunables_backup_by_listem.txt
+		echo "This file is keeping all original values of listed tunables. " >> tunables_backup_by_listem.txt
+		echo " " >> tunables_backup_by_listem.txt
+		date >> tunables_backup_by_listem.txt
+		echo " " >> tunables_backup_by_listem.txt
+		tunables_backup
+fi
+}
+
+
+tunables_backup() {
+##### correct #####
+for loc in $location_list; do
+	backup_list=""$loc""*""""
+##### start backup #####
+	echo "These are tunable values of " $loc  >> tunables_backup_by_listem.txt
+	echo " " >> tunables_backup_by_listem.txt
+##### loop through list item #####
+		for backup_item in $backup_list; do
+			if [ -f "$backup_item" ]; then
+				echo_backup_result=$(cat $backup_item)
+				echo_backup_name=${backup_item#$loc}
+######  Save backup item #######
+				echo $echo_backup_name  ": " $echo_backup_result >> tunables_backup_by_listem.txt
+			fi
+		done
+	echo " " >> tunables_backup_by_listem.txt
+	echo " " >> tunables_backup_by_listem.txt
+done
+
+unset location_list  
+unset loc
+unset backup_list 
+unset backup_item 
+unset echo_backup_name 
+unset echo_backup_result
+
+#####backup finished#####
+if [[ $change_value -eq 1 ]]; then
+		clear
+		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txt $(tput sgr0)"
+		echo " "
+		make_a_change
+	else
+		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txt $(tput sgr0)"
+		more
+fi
+}
+
+
+save_before_change() {
+while true; do
+		read -p "$(tput bold) Do you want to make backup of existing values ? $(tput sgr0)" choice
+		case $choice in
+			[yYdD]*) unset choice
+					backup_call
+					break
+					;;
+			[nN]*) 	unset choice
+					make_a_change
+					break
+					;;
+				* ) echo -e "I need an answer - y (yes) or n (no) ! "
+		esac
+	done
+}
+
+
+make_a_change() {
+unset location
+unset tunelist
+unset echo_tune_result
+unset echo_tune_name
+unset tune
+unset loop
+echo " "
+echo "$(tput bold) You are about to change tunable value.  Proceed with caution. $(tput sgr0)"
+echo " "
+echo " "
+######## List them #########
+echo "$(tput bold) You will see list of tunables to search for the right one. $(tput sgr0)"
+echo "$(tput bold) Choose desired location to list values to change (from /proc/sys) : $(tput sgr0)"
+echo "$(tput bold)1$(tput sgr0).................debug"
+echo "$(tput bold)2$(tput sgr0).................fs"
+echo "$(tput bold)3$(tput sgr0).................kernel"
+echo "$(tput bold)4$(tput sgr0).................net"
+echo "$(tput bold)5$(tput sgr0).................net/bridge"
+echo "$(tput bold)6$(tput sgr0).................net/core"
+echo "$(tput bold)7$(tput sgr0).................net/ipv4"
+echo "$(tput bold)8$(tput sgr0).................net/ipv6"
+echo "$(tput bold)9$(tput sgr0).................net/netfilter"
+echo "$(tput bold)10$(tput sgr0)................vm"
+###### Chooose location ########
+while true; do
+		read -p "$(tput bold) Your selection ( 1 - 10 ) ? $(tput sgr0)" choice
+		case $choice in
+			1) 	location="/proc/sys/debug/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			2) 	location="/proc/sys/fs/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			3)	 location="/proc/sys/kernel/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			4)	 location="/proc/sys/net/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			5) 	location="/proc/sys/net/bridge/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			6) 	location="/proc/sys/net/core/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			7)	 location="/proc/sys/net/ipv4/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			8)	 location="/proc/sys/net/ipv6/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			9)	 location="/proc/sys/net/netfilter/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+			10)	 location="/proc/sys/vm/"
+					unset choice
+					proceed_with_change
+					break
+					;;
+				* ) echo -e " I need correct answer - ( 1 -10 ) ! "
+		esac
+	done
+}
+
+
+proceed_with_change() {
+tunelist=""$location""*""""
+echo " $(tput bold)  Showing tunable values of " $location
+echo "$(tput sgr0) Be careful - you must precisely remember the name of tunable...$(tput sgr0) "
+loop=0
+for tune in $tunelist; do
+if [ -f "$tune" ]; then
+	echo_tune_result=$(cat $tune)
+	echo_tune_name=${tune#$location}
+	echo $echo_tune_name  ": " $echo_tune_result
+	(( loop++))
+		if [[ loop -eq 20 ]]; then
+			echo " Just waiting for keypress to continue... $(tput sgr0)"
+			read -n 1 -s
+			loop=0
+		fi
+fi
+done
+change_decide
+}
+
+
+change_decide() {
+###### Insert name to change #######
+read -p "$(tput bold) INSERT PRECISE NAME OF TUNABLE TO CHANGE (or cancel with c or n): $(tput sgr0)" change_this
+precise_change=""$location""""$change_this""
+if [ "$change_this" == "n" ] || [ "$change_this" == "N" ] || [ "$change_this" == "c" ] || [ "$change_this" == "C" ]; then
+	echo " You choose not to proceed... OK"
+	more
+elif  [ -e "$precise_change" ]; then
+	read -p "$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
+	final_decision
+else
+	echo "This file is not existing. Try again. $(tput sgr0)"
+	unset change_this
+	unset precise_change
+	change_decide
+fi
+}
+
+
+final_decision() {
+if [ -e "$precise_change" ]; then
+		while true; do
+			read -p "$(tput bold) ARE YOU SURE ? $(tput sgr0)" choice
+				case $choice in
+				[yYdD]*) 	unset choice
+							change_engage
+							break
+							;;
+					[nN]*) 	unset choice
+							echo "Then we are aborting this. $(tput sgr0)"
+							change_value=0
+							more
+							break
+							;;
+						* ) 	echo -e "I need an answer - y (yes) or n (no) ! "
+				esac
+			done
+	else
+		echo "This file is not existing. Try again. $(tput sgr0)"
+		unset change_this
+		unset precise_change
+		change_decide
+fi
+}
+
+
+change_engage() {
+echo "$new_value" | sudo tee $precise_change
+echo "Value of " $precise_change " is now : " $new_value
+echo " "
+change_value=0
+######## Done ##########
+unset new_value
+unset change_this
+unset precise_change
+unset location
+unset tunelist
+unset echo_tune_result
+unset echo_tune_name
+unset tune
+unset loop
+
+more
+}
+
+
+get_out() {
+### End ###
+echo " "
+echo "$(tput bold) That's all folks! $(tput sgr0)"
+
+unset change_value
+unset location
+unset tunelist
+unset echo_tune_result
+unset echo_tune_name
+unset tune
+unset loop
+
+exit 0
+}
+
+#### FUNCTIONS END ####
+
+
+###############
+##### CODE #####
+
+change_value=0
+clear
+print_choices
+
+##### END #####
