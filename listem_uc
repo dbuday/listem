@@ -585,14 +585,30 @@ precise_change=""$location""""$change_this""
 if [ "$change_this" == "n" ] || [ "$change_this" == "N" ] || [ "$change_this" == "c" ] || [ "$change_this" == "C" ]; then
 	echo " You choose not to proceed... OK"
 	more
+elif [ -z "$change_this" ]; then
+	echo "You must enter name of the tunable. Try again."
+	unset change_this
+	unset precise_change
+	change_decide
 elif  [ -e "$precise_change" ]; then
-	read -p "$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
-	final_decision
+	value_decide
 else
 	echo "File " $precise_change " does not exist. Try again. "
 	unset change_this
 	unset precise_change
 	change_decide
+fi
+}
+
+
+value_decide() {
+	read -p "$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
+if [ -z "$new_value" ]; then
+	echo "You must enter some value. Try again. "
+	unset new_value
+	value_decide
+else
+	final_decision
 fi
 }
 
