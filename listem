@@ -576,7 +576,7 @@ elif  [ -e "$precise_change" ]; then
 	read -p "$(tput setaf 1)$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
 	final_decision
 else
-	echo "$(tput setaf 4)This file is not existing. Try again. $(tput sgr0)"
+	echo "$(tput setaf 4)File " $precise_change " is not existing. Try again. $(tput sgr0)"
 	unset change_this
 	unset precise_change
 	change_decide
@@ -603,7 +603,7 @@ if [ -e "$precise_change" ]; then
 				esac
 			done
 	else
-		echo "$(tput setaf 4)This file is not existing. Try again. $(tput sgr0)"
+		echo "$(tput setaf 4)File " $precise_change " is not existing. Try again. $(tput sgr0)"
 		unset change_this
 		unset precise_change
 		change_decide
@@ -613,8 +613,8 @@ fi
 
 change_engage() {
 echo "$new_value" | sudo tee $precise_change
-echo "Value of " $precise_change " is now : " $new_value
-echo " "
+echo "$(tput bold) Value of " $precise_change " is now : " $new_value
+echo " $(tput sgr0)"
 change_value=0
 ######## Done ##########
 unset new_value
