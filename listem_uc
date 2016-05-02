@@ -15,8 +15,18 @@
 #
 #############################
 
+######## Log file is being updated every time a value is changed ########
+######## Variable "create_change_log", enables or diables this feature ########
+######## Set it to "1" to enable, or "0" (zero) to disable it ########
 
+create_change_log=1
+
+###############################################
+
+
+################
 #### FUNCTIONS ####
+#################
 
 print_choices() {
 ### Print choices ###
@@ -262,7 +272,7 @@ while true; do
 					;;
 			911)	unset choice
 					change_value=1
-					echo "$(tput bold)This is potentially dangerous move.$(tput sgr0)"
+					echo "$(tput bold)This is serious move.$(tput sgr0)"
 					save_before_change
 					break
 					;;
@@ -383,22 +393,22 @@ while true; do
 backup_call() {
 location_list="/proc/sys/debug/ /proc/sys/fs/ /proc/sys/kernel/ /proc/sys/net/ /proc/sys/net/bridge/ /proc/sys/net/core/ /proc/sys/net/ipv4/ /proc/sys/net/ipv6/ /proc/sys/net/netfilter/ /proc/sys/vm/"
 
-if [ -e "tunables_backup_by_listem.txt" ]; then
-		echo " " >> tunables_backup_by_listem.txt
-		echo " " >> tunables_backup_by_listem.txt
-		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txt
-		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txt
-		echo " " >> tunables_backup_by_listem.txt
-		date >> tunables_backup_by_listem.txt
-		echo " " >> tunables_backup_by_listem.txt
+if [ -e "tunables_backup_by_listem.txtlistem_tunables_backup.txt" ]; then
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo "---------------------------------------------------------------------------------------------- " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		date >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
 		tunables_backup
 	else
-		echo " " > tunables_backup_by_listem.txt
-		echo "This file is created by listem script (bash script showing tunables)." >> tunables_backup_by_listem.txt
-		echo "This file is keeping all original values of listed tunables. " >> tunables_backup_by_listem.txt
-		echo " " >> tunables_backup_by_listem.txt
-		date >> tunables_backup_by_listem.txt
-		echo " " >> tunables_backup_by_listem.txt
+		echo " " > tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo "This file is created by listem script (bash script showing tunables)." >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo "This file is keeping all original values of listed tunables. " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		date >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+		echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
 		tunables_backup
 fi
 }
@@ -409,19 +419,19 @@ tunables_backup() {
 for loc in $location_list; do
 	backup_list=""$loc""*""""
 ##### start backup #####
-	echo "These are tunable values of " $loc  >> tunables_backup_by_listem.txt
-	echo " " >> tunables_backup_by_listem.txt
+	echo "These are tunable values of " $loc  >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+	echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
 ##### loop through list item #####
 		for backup_item in $backup_list; do
 			if [ -f "$backup_item" ]; then
 				echo_backup_result=$(cat $backup_item)
 				echo_backup_name=${backup_item#$loc}
 ######  Save backup item #######
-				echo $echo_backup_name  ": " $echo_backup_result >> tunables_backup_by_listem.txt
+				echo $echo_backup_name  ": " $echo_backup_result >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
 			fi
 		done
-	echo " " >> tunables_backup_by_listem.txt
-	echo " " >> tunables_backup_by_listem.txt
+	echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
+	echo " " >> tunables_backup_by_listem.txtlistem_tunables_backup.txt
 done
 
 unset location_list  
@@ -434,11 +444,11 @@ unset echo_backup_result
 #####backup finished#####
 if [[ $change_value -eq 1 ]]; then
 		clear
-		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txt $(tput sgr0)"
+		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txtlistem_tunables_backup.txt $(tput sgr0)"
 		echo " "
 		make_a_change
 	else
-		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txt $(tput sgr0)"
+		echo " Backup is saved in $(tput bold)  tunables_backup_by_listem.txtlistem_tunables_backup.txt $(tput sgr0)"
 		more
 fi
 }
@@ -579,7 +589,7 @@ elif  [ -e "$precise_change" ]; then
 	read -p "$(tput bold) INSERT NEW VALUE: $(tput sgr0)" new_value
 	final_decision
 else
-	echo "File " $precise_change " is not existing. Try again. "
+	echo "File " $precise_change " does not exist. Try again. "
 	unset change_this
 	unset precise_change
 	change_decide
@@ -606,7 +616,7 @@ if [ -e "$precise_change" ]; then
 				esac
 			done
 	else
-		echo "File " $precise_change " is not existing. Try again. "
+		echo "File " $precise_change " does not exist. Try again. "
 		unset change_this
 		unset precise_change
 		change_decide
@@ -618,6 +628,35 @@ change_engage() {
 echo "$new_value" | sudo tee $precise_change
 echo "$(tput bold) Value of " $precise_change " is now : " $new_value
 echo " $(tput sgr0)"
+
+######## log file creation ########
+
+if [ $create_change_log -eq 1 ]; then
+	if [ -e "listem.log" ]; then
+		echo " " >> listem.log
+		date >> listem.log
+		echo "Value of " $precise_change " is now : " $new_value >> listem.log
+		echo "......................................................................................................................" >> listem.log
+		echo "Log file (listem.log) is updated."
+	else
+		echo " " > listem.log
+		echo "This is log file created by listem script. " >> listem.log
+		echo "log file is being updated every time a value is changed. " >> listem.log
+		echo "You can disable this feature by setting variable create_change_log to 0 (zero value)." >> listem.log
+		echo "You can find it at the beginning of script (line 20) " >> listem.log
+		echo " " >> listem.log
+		echo " " >> listem.log
+		echo " " >> listem.log
+		date >> listem.log
+		echo "Value of " $precise_change " is now : " $new_value >> listem.log
+		echo "......................................................................................................................" >> listem.log
+		echo "Log file (listem.log) is created."
+	fi
+else
+	echo "No log file is created, nor updated."
+fi
+###########################
+
 change_value=0
 ######## Done ##########
 unset new_value
@@ -639,6 +678,7 @@ get_out() {
 echo " "
 echo "$(tput bold) That's all folks! $(tput sgr0)"
 
+unset create_change_log
 unset change_value
 unset location
 unset tunelist
